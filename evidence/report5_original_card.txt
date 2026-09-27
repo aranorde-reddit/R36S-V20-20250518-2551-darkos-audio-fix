@@ -1,0 +1,444 @@
+R36S hw snapshot 5 - Mon 01 Sep 2025 11:17:05 AM EDT
+$ cat /etc/os-release | head -3
+NAME="Ubuntu"
+VERSION="19.10 (Eoan Ermine)"
+ID=ubuntu
+$ ls -la /boot/
+total 45476
+drwxr-xr-x  4 root root    16384 Dec 31  1969 .
+drwxr-xr-x 23 root root     4096 Sep  1 11:16 ..
+-rwxr-xr-x  1 root root    72656 Nov 26  2025 battery_0.bmp
+-rwxr-xr-x  1 root root    72656 Nov 26  2025 battery_1.bmp
+-rwxr-xr-x  1 root root    72656 Nov 26  2025 battery_2.bmp
+-rwxr-xr-x  1 root root    72656 Nov 26  2025 battery_3.bmp
+-rwxr-xr-x  1 root root    72656 Nov 26  2025 battery_4.bmp
+-rwxr-xr-x  1 root root    72656 Nov 26  2025 battery_5.bmp
+-rwxr-xr-x  1 root root    72656 Nov 26  2025 battery_fail.bmp
+drwxr-xr-x  2 root root     8192 Nov 26  2025 extlinux
+-rwxr-xr-x  1 root root 30846984 Nov 26  2025 Image
+-rwxr-xr-x  1 root root   921654 Feb  4  2026 logo.bmp
+-rwxr-xr-x  1 root root   921654 Feb  4  2026 logo_kernel.bmp
+-rwxr-xr-x  1 root root   107685 Nov 26  2025 rf3536k3ka.dtb
+drwxr-xr-x  2 root root     8192 Dec  5  2025 System Volume Information
+-rwxr-xr-x  1 root root 13194771 Nov 26  2025 uInitrd
+$ md5sum /boot/Image /boot/uInitrd /boot/*.dtb
+2207388fd4500f6272cf10adb68ca8f7  /boot/Image
+2162eb0d173691babdcfa5eaf8c10ed7  /boot/uInitrd
+bb3c63c12338769c26209269a330d0dc  /boot/rf3536k3ka.dtb
+$ cat /roms/tools/../../etc/hostname 2>/dev/null; hostname
+rg351mp
+rg351mp
+-- U-Boot / loader versions
+-- register dumps
+pmic regs: 255 lines
+codec regs: 255 lines
+codec raw idle: 12:03 13:f4 14:00 15:0f 16:00 17:40 18:c8 19:00 1a:00 1b:00 1c:00 1d:00 1e:00 1f:00 20:00 21:00 22:00 23:ff 24:ff 25:00 26:00 27:70 28:00 29:66 2a:00 2b:00 2c:00 2d:00 2e:00 2f:0f 30:06 31:08 32:08 33:00 34:a5 35:02 36:00 37:00 38:11 39:ff 3a:ff 3b:00 3c:00 3d:e0 3e:0f 3f:09 40:a5 41:7f 42:04 43:58 44:2d 45:0c 46:a5 47:00 48:00 49:00 4a:00 4b:0f 4c:20 4d:00 4e:0f 4f:00 ed:81 ee:7a
+codec raw playing: 12:03 13:f4 14:00 15:0f 16:00 17:40 18:c8 19:00 1a:00 1b:00 1c:00 1d:00 1e:00 1f:00 20:00 21:00 22:00 23:ff 24:ff 25:00 26:00 27:70 28:00 29:66 2a:00 2b:00 2c:00 2d:00 2e:00 2f:03 30:04 31:08 32:08 33:00 34:a5 35:02 36:00 37:00 38:10 39:08 3a:08 3b:00 3c:00 3d:e0 3e:0f 3f:09 40:a5 41:7f 42:04 43:58 44:2d 45:0c 46:a5 47:00 48:00 49:00 4a:00 4b:0f 4c:20 4d:00 4e:0f 4f:00 ed:81 ee:7a
+                hclk_i2s1             1        1        0   200000000          0     0  50000
+          clk_i2s1_src                1        1        0   600000000          0     0  50000
+             clk_i2s1_frac            1        1        0    12288000          0     0  50000
+                clk_i2s1_mux          1        1        0    12288000          0     0  50000
+                   clk_i2s1           2        2        0    12288000          0     0  50000
+                      clk_i2s1_out_pre       1        1        0    12288000          0     0  50000
+                         clk_i2s1_out       2        2        0    12288000          0     0  50000
+i2s regs idle/playing: 10 / 10 lines
+$ S cat /sys/kernel/debug/regulator/regulator_summary
+ regulator                      use open bypass  opmode voltage current     min     max
+---------------------------------------------------------------------------------------
+ regulator-dummy                  4    4      0 unknown     0mV     0mA     0mV     0mV 
+    ff300000.usb-vusb_a           1                                 0mA     0mV     0mV
+    ff300000.usb-vusb_d           1                                 0mA     0mV     0mV
+    backlight-power               1                                 0mA     0mV     0mV
+    regulator-dummy               0                                 0mA     0mV     0mV
+ vcc5v0_sys                      12   12      0 unknown  5000mV     0mA  5000mV  5000mV 
+    vcc5v0_sys                    0                                 0mA     0mV     0mV
+    vdd_logic                     1    6      0  normal  1150mV     0mA   950mV  1350mV 
+       dmc-center                 0                                 0mA     0mV     0mV
+       dmc-center                 0                                 0mA   975mV  1350mV
+       ff400000.gpu-mali          0                                 0mA  1150mV  1350mV
+       ff400000.gpu-mali          0                                 0mA     0mV     0mV
+       bus-apll-bus               0                                 0mA  1000mV  1350mV
+       vdd_logic                  0                                 0mA     0mV     0mV
+    vdd_arm                       2    2      0  normal  1350mV     0mA   950mV  1350mV 
+       cpu0-cpu                   1                                 0mA  1350mV  1350mV
+       vdd_arm                    0                                 0mA     0mV     0mV
+    vcc_ddr                       1    1      0  normal   500mV     0mA     0mV     0mV 
+       vcc_ddr                    0                                 0mA     0mV     0mV
+    vcc_3v0                       4    6      0  normal  3000mV     0mA  3000mV  3000mV 
+       ff140000.syscon:io-domains-vccio5   0                                 0mA     0mV     0mV
+       ff140000.syscon:io-domains-vccio4   0                                 0mA     0mV     0mV
+       vcc_3v0                    0                                 0mA     0mV     0mV
+       vcc2v8_dvp                 1    3      0 unknown  3300mV     0mA  1800mV  3300mV 
+          ff140000.syscon:io-domains-vccio1   0                                 0mA     0mV     0mV
+          ff380000.dwmmc-vqmmc    0                                 0mA  3300mV  3300mV
+          vcc2v8_dvp              0                                 0mA     0mV     0mV
+       vcc1v8_dvp                 1    2      0 unknown  3300mV     0mA  3300mV  3300mV 
+          ff380000.dwmmc-vmmc     0                                 0mA  3300mV  3400mV
+          vcc1v8_dvp              0                                 0mA     0mV     0mV
+       vdd1v5_dvp                 1    1      0 unknown  1500mV     0mA  1500mV  1500mV 
+          vdd1v5_dvp              0                                 0mA     0mV     0mV
+    vcc_1v0                       1    1      0 unknown  1000mV     0mA  1000mV  1000mV 
+       vcc_1v0                    0                                 0mA     0mV     0mV
+    vcc1v8_soc                    2    4      0 unknown  1800mV     0mA  1800mV  1800mV 
+       ff140000.syscon:io-domains-vccio3   0                                 0mA     0mV     0mV
+       ff140000.syscon:io-domains-vccio6   0                                 0mA     0mV     0mV
+       ff288000.saradc-vref       1                                 0mA     0mV     0mV
+       vcc1v8_soc                 0                                 0mA     0mV     0mV
+    vcc1v0_soc                    1    1      0 unknown  1000mV     0mA  1000mV  1000mV 
+       vcc1v0_soc                 0                                 0mA     0mV     0mV
+    vcc3v0_pmu                    1    3      0 unknown  3000mV     0mA  3000mV  3000mV 
+       ff010000.syscon:io-domains-pmuio2   0                                 0mA     0mV     0mV
+       ff010000.syscon:io-domains-pmuio1   0                                 0mA     0mV     0mV
+       vcc3v0_pmu                 0                                 0mA     0mV     0mV
+    vccio_sd                      2    3      0 unknown  1800mV     0mA  1800mV  3300mV 
+       ff140000.syscon:io-domains-vccio2   0                                 0mA     0mV     0mV
+       ff370000.dwmmc-vqmmc       1                                 0mA  1800mV  1950mV
+       vccio_sd                   0                                 0mA     0mV     0mV
+    vcc_sd                        1    2      0 unknown  3300mV     0mA  3300mV  3300mV 
+       ff370000.dwmmc-vmmc        1                                 0mA  3300mV  3400mV
+       vcc_sd                     0                                 0mA     0mV     0mV
+    boost                         1    2      0 unknown  5000mV     0mA  5000mV  5400mV 
+       boost                      0                                 0mA     0mV     0mV
+       otg_switch                 0    2      0 unknown  5000mV     0mA     0mV     0mV 
+          rk817-charger-otg_switch   0                                 0mA     0mV     0mV
+          otg_switch              0                                 0mA     0mV     0mV
+ vcc18_lcd_n                      1    2      0 unknown     0mV     0mA     0mV     0mV 
+    ff450000.dsi.0-power          1                                 0mA     0mV     0mV
+    vcc18_lcd_n                   0                                 0mA     0mV     0mV
+$ for r in /sys/class/regulator/regulator.*; do echo "$(cat $r/name 2>/dev/null) state=$(cat $r/state 2>/dev/null) uV=$(cat $r/microvolts 2>/dev/null)"; done
+regulator-dummy state= uV=
+vcc5v0_sys state= uV=5000000
+vcc3v0_pmu state=enabled uV=3000000
+vccio_sd state=enabled uV=1800000
+vcc_sd state=enabled uV=3300000
+vcc2v8_dvp state=enabled uV=3300000
+vcc1v8_dvp state=enabled uV=3300000
+vdd1v5_dvp state=enabled uV=1500000
+boost state=enabled uV=5000000
+otg_switch state=disabled uV=
+vcc18_lcd_n state=enabled uV=
+vdd_logic state=enabled uV=1150000
+vdd_arm state=enabled uV=1350000
+vcc_ddr state=enabled uV=500000
+vcc_3v0 state=enabled uV=3000000
+vcc_1v0 state=enabled uV=1000000
+vcc1v8_soc state=enabled uV=1800000
+vcc1v0_soc state=enabled uV=1000000
+$ S cat /sys/kernel/debug/gpio
+gpiochip0: GPIOs 0-31, parent: platform/ff040000.gpio0, gpio0:
+ gpio-0   (                    |blue_led            ) out hi 
+ gpio-2   (                    |cd                  ) in  lo ACTIVE LOW
+ gpio-3   (                    |cd                  ) in  lo ACTIVE LOW
+ gpio-11  (                    |blue_led_1          ) out lo 
+ gpio-12  (                    |red_led_1           ) out hi 
+ gpio-13  (                    |vcc18-lcd-n         ) out hi 
+ gpio-17  (                    |red_led             ) out lo 
+
+gpiochip1: GPIOs 32-63, parent: platform/ff250000.gpio1, gpio1:
+
+gpiochip2: GPIOs 64-95, parent: platform/ff260000.gpio2, gpio2:
+ gpio-76  (                    |rocker0_gpio        ) out lo 
+ gpio-77  (                    |joy_gpio16          ) in  hi 
+ gpio-78  (                    |joy_gpio17          ) in  hi 
+ gpio-79  (                    |rocker_gpio         ) out lo 
+ gpio-80  (                    |rocker1_gpio        ) out hi 
+ gpio-86  (                    |hp-det              ) in  lo 
+
+gpiochip3: GPIOs 96-127, parent: platform/ff270000.gpio3, gpio3:
+ gpio-100 (                    |otg_gpio            ) out hi 
+ gpio-101 (                    |rk817_dc_det        ) in  lo 
+ gpio-103 (                    |spk-con             ) out lo 
+ gpio-106 (                    |joy_gpio18          ) in  hi 
+ gpio-107 (                    |joy_gpio0           ) in  hi 
+ gpio-108 (                    |joy_gpio1           ) in  hi 
+ gpio-109 (                    |joy_gpio2           ) in  hi 
+ gpio-110 (                    |joy_gpio3           ) in  hi 
+ gpio-111 (                    |reset               ) out hi ACTIVE LOW
+ gpio-112 (                    |joy_gpio4           ) in  hi 
+ gpio-113 (                    |joy_gpio5           ) in  hi 
+ gpio-114 (                    |joy_gpio6           ) in  hi 
+ gpio-115 (                    |joy_gpio7           ) in  hi 
+ gpio-116 (                    |joy_gpio8           ) in  hi 
+ gpio-117 (                    |joy_gpio9           ) in  hi 
+ gpio-118 (                    |joy_gpio10          ) in  hi 
+ gpio-119 (                    |joy_gpio11          ) in  hi 
+ gpio-120 (                    |joy_gpio12          ) in  hi 
+ gpio-121 (                    |joy_gpio13          ) in  hi 
+ gpio-122 (                    |joy_gpio14          ) in  hi 
+ gpio-123 (                    |joy_gpio15          ) in  hi 
+
+gpiochip4: GPIOs 509-511, parent: platform/rk805-pinctrl, rk817-gpio, can sleep:
+-- full GPIO scan (bank_pin: direction level) - pins busy with a driver are marked busy
+gpio0_A0 (gpio-0):  
+gpio0_A1 (gpio-1): in 0
+gpio0_A2 (gpio-2):  
+gpio0_A3 (gpio-3):  
+gpio0_A4 (gpio-4): in 1
+gpio0_A5 (gpio-5): in 1
+gpio0_A6 (gpio-6): in 1
+gpio0_A7 (gpio-7): in 1
+gpio0_B0 (gpio-8): in 1
+gpio0_B1 (gpio-9): in 1
+gpio0_B2 (gpio-10): in 1
+gpio0_B3 (gpio-11):  
+gpio0_B4 (gpio-12):  
+gpio0_B5 (gpio-13):  
+gpio0_B6 (gpio-14): in 1
+gpio0_B7 (gpio-15): in 0
+gpio0_C0 (gpio-16): in 0
+gpio0_C1 (gpio-17):  
+gpio0_C2 (gpio-18): in 1
+gpio0_C3 (gpio-19): in 1
+gpio0_C4 (gpio-20): in 1
+gpio0_C5 (gpio-21): in 1
+gpio0_C6 (gpio-22): in 0
+gpio0_C7 (gpio-23): in 0
+gpio0_D0 (gpio-24): in 0
+gpio0_D1 (gpio-25): in 0
+gpio0_D2 (gpio-26): in 0
+gpio0_D3 (gpio-27): in 0
+gpio0_D4 (gpio-28): in 0
+gpio0_D5 (gpio-29): in 0
+gpio0_D6 (gpio-30): in 0
+gpio0_D7 (gpio-31): in 0
+gpio1_A0 (gpio-32): in 0
+gpio1_A1 (gpio-33): in 0
+gpio1_A2 (gpio-34): in 0
+gpio1_A3 (gpio-35): in 0
+gpio1_A4 (gpio-36): in 0
+gpio1_A5 (gpio-37): in 0
+gpio1_A6 (gpio-38): in 0
+gpio1_A7 (gpio-39): in 0
+gpio1_B0 (gpio-40): in 0
+gpio1_B1 (gpio-41): in 0
+gpio1_B2 (gpio-42): in 0
+gpio1_B3 (gpio-43): in 0
+gpio1_B4 (gpio-44): in 0
+gpio1_B5 (gpio-45): in 0
+gpio1_B6 (gpio-46): in 0
+gpio1_B7 (gpio-47): in 0
+gpio1_C0 (gpio-48): in 1
+gpio1_C1 (gpio-49): in 1
+gpio1_C2 (gpio-50): in 1
+gpio1_C3 (gpio-51): in 1
+gpio1_C4 (gpio-52): in 1
+gpio1_C5 (gpio-53): in 0
+gpio1_C6 (gpio-54): in 1
+gpio1_C7 (gpio-55): in 1
+gpio1_D0 (gpio-56): in 1
+gpio1_D1 (gpio-57): in 1
+gpio1_D2 (gpio-58): in 1
+gpio1_D3 (gpio-59): in 1
+gpio1_D4 (gpio-60): in 1
+gpio1_D5 (gpio-61): in 1
+gpio1_D6 (gpio-62): in 0
+gpio1_D7 (gpio-63): in 1
+gpio2_A0 (gpio-64): in 0
+gpio2_A1 (gpio-65): in 0
+gpio2_A2 (gpio-66): in 0
+gpio2_A3 (gpio-67): in 0
+gpio2_A4 (gpio-68): in 0
+gpio2_A5 (gpio-69): in 0
+gpio2_A6 (gpio-70): in 0
+gpio2_A7 (gpio-71): in 0
+gpio2_B0 (gpio-72): in 0
+gpio2_B1 (gpio-73): in 0
+gpio2_B2 (gpio-74): in 0
+gpio2_B3 (gpio-75): in 0
+gpio2_B4 (gpio-76):  
+gpio2_B5 (gpio-77):  
+gpio2_B6 (gpio-78):  
+gpio2_B7 (gpio-79):  
+gpio2_C0 (gpio-80):  
+gpio2_C1 (gpio-81): in 0
+gpio2_C2 (gpio-82): in 0
+gpio2_C3 (gpio-83): in 1
+gpio2_C4 (gpio-84): in 0
+gpio2_C5 (gpio-85): in 0
+gpio2_C6 (gpio-86):  
+gpio2_C7 (gpio-87): in 0
+gpio2_D0 (gpio-88): in 0
+gpio2_D1 (gpio-89): in 0
+gpio2_D2 (gpio-90): in 0
+gpio2_D3 (gpio-91): in 0
+gpio2_D4 (gpio-92): in 0
+gpio2_D5 (gpio-93): in 0
+gpio2_D6 (gpio-94): in 0
+gpio2_D7 (gpio-95): in 0
+gpio3_A0 (gpio-96): in 0
+gpio3_A1 (gpio-97): in 1
+gpio3_A2 (gpio-98): in 1
+gpio3_A3 (gpio-99): in 0
+gpio3_A4 (gpio-100):  
+gpio3_A5 (gpio-101):  
+gpio3_A6 (gpio-102): in 0
+gpio3_A7 (gpio-103):  
+gpio3_B0 (gpio-104): in 0
+gpio3_B1 (gpio-105): in 0
+gpio3_B2 (gpio-106):  
+gpio3_B3 (gpio-107):  
+gpio3_B4 (gpio-108):  
+gpio3_B5 (gpio-109):  
+gpio3_B6 (gpio-110):  
+gpio3_B7 (gpio-111):  
+gpio3_C0 (gpio-112):  
+gpio3_C1 (gpio-113):  
+gpio3_C2 (gpio-114):  
+gpio3_C3 (gpio-115):  
+gpio3_C4 (gpio-116):  
+gpio3_C5 (gpio-117):  
+gpio3_C6 (gpio-118):  
+gpio3_C7 (gpio-119):  
+gpio3_D0 (gpio-120):  
+gpio3_D1 (gpio-121):  
+gpio3_D2 (gpio-122):  
+gpio3_D3 (gpio-123):  
+gpio3_D4 (gpio-124): in 1
+gpio3_D5 (gpio-125): in 0
+gpio3_D6 (gpio-126): in 0
+gpio3_D7 (gpio-127): in 0
+$ S cat /sys/kernel/debug/pinctrl/pinctrl/pinmux-pins
+cat: /sys/kernel/debug/pinctrl/pinctrl/pinmux-pins: Permission denied
+(exit 1)
+$ systemctl list-units --type=service --state=running,exited --no-pager | grep -viE 'getty|dbus|journal|udev|logind|network|timesync|resolve|cron|ssh'
+UNIT                                          LOAD   ACTIVE SUB     DESCRIPTION                                                 
+alsa-restore.service                          loaded active exited  Save/Restore Sound Card State                               
+batt_led.service                              loaded active running Battery Life Indicator service                              
+console-setup.service                         loaded active exited  Set console font and keymap                                 
+emulationstation.service                      loaded active running ODROID-GO2 EmulationStation                                 
+keyboard-setup.service                        loaded active exited  Set the console keyboard layout                             
+mpv.service                                   loaded active running MPV controller input service                                
+oga_events.service                            loaded active running odroidgo2 evdev listener                                    
+rc-local.service                              loaded active running /etc/rc.local Compatibility                                 
+setvtrgb.service                              loaded active exited  Set console scheme                                          
+systemd-backlight@backlight:backlight.service loaded active exited  Load/Save Screen Backlight Brightness of backlight:backlight
+systemd-fsck@dev-mmcblk1p1.service            loaded active exited  File System Check on /dev/mmcblk1p1                         
+systemd-modules-load.service                  loaded active exited  Load Kernel Modules                                         
+systemd-random-seed.service                   loaded active exited  Load/Save Random Seed                                       
+systemd-remount-fs.service                    loaded active exited  Remount Root and Kernel File Systems                        
+systemd-sysctl.service                        loaded active exited  Apply Kernel Variables                                      
+systemd-sysusers.service                      loaded active exited  Create System Users                                         
+systemd-tmpfiles-setup-dev.service            loaded active exited  Create Static Device Nodes in /dev                          
+systemd-tmpfiles-setup.service                loaded active exited  Create Volatile Files and Directories                       
+systemd-update-utmp.service                   loaded active exited  Update UTMP about System Boot/Shutdown                      
+systemd-user-sessions.service                 loaded active exited  Permit User Sessions                                        
+wpa_supplicant.service                        loaded active running WPA supplicant                                              
+
+LOAD   = Reflects whether the unit definition was properly loaded.
+ACTIVE = The high-level unit activation state, i.e. generalization of SUB.
+SUB    = The low-level unit activation state, values depend on unit type.
+
+31 loaded units listed. Pass --all to see loaded but inactive units, too.
+To show all installed unit files use 'systemctl list-unit-files'.
+$ cat /home/ark/.asoundrc
+cat: /home/ark/.asoundrc: No such file or directory
+(exit 1)
+$ cat /var/lib/alsa/asound.state | grep -A2 -E "'Playback Path'|'Playback Volume'"
+		name 'Playback Path'
+		value SPK
+		comment {
+--
+		name 'Playback Volume'
+		value.0 100
+		value.1 100
+$ ls -la /home/ark /opt/system 2>/dev/null | head -60
+/home/ark:
+total 280
+drwxrwxr-x 10 ark  ark   4096 Sep  1 11:17 .
+drwxr-xr-x  3 root root  4096 Nov 19  2025 ..
+drwxr-xr-x  2 ark  ark   4096 Apr  2  2024 .applewin
+-rw-rw-r--  1 ark  ark    255 Sep  1 11:16 .asoundrcbak
+-rwxr-xr-x  1 ark  ark    255 Jan  5  2021 .asoundrcfords
+-rwxr-xr-x  1 ark  ark   2307 Apr 11  2024 .atari800.cfg
+-rwxr-xr-x  1 ark  ark   4438 Aug 25 04:59 .bash_history
+-rwxr-xr-x  1 ark  ark    220 Mar  9  2020 .bash_logout
+-rwxr-xr-x  1 ark  ark   3771 Mar  9  2020 .bashrc
+drwxr-xr-x  7 ark  ark   4096 Sep  1  2025 .cache
+drwxrwxr-x 14 ark  ark   4096 Sep  1 11:16 .config
+-rw-r--r--  1 ark  ark    385 Sep  1 11:17 device_info_ArkOS_RG351P.txt
+drwxrwxr-x  8 ark  ark   4096 Nov 25  2025 .emulationstation
+-rw-r--r--  1 ark  ark    707 Sep  1 11:11 esupdate.log
+drwxr-xr-x  3 ark  ark   4096 Mar 13  2020 .gnupg
+drwxr-xr-x  2 ark  ark   4096 Nov 29  2020 .hatari
+-rw-------  1 ark  ark      0 Jul  1 14:26 .history
+drwxr-xr-x  4 ark  ark   4096 May 15 04:17 .local
+drwxr-xr-x  2 ark  ark   4096 Feb 24  2024 .mednafen
+-rwxr-xr-x  1 ark  ark    807 Mar  9  2020 .profile
+-rwxr-xr-x  1 ark  ark    938 May 15 04:11 r3xsesupdate.log
+-rwxr-xr-x  1 ark  ark     66 Sep 12  2020 .selected_editor
+-rwxr-xr-x  1 ark  ark      0 Mar 13  2020 .sudo_as_admin_successful
+-rw-r--r--  1 ark  ark  56072 Jul  7 04:41 update06302025-1.log
+-rw-r--r--  1 ark  ark  69825 Jul  1 14:31 update06302025.log
+-rw-r--r--  1 ark  ark    119 Sep  1 11:11 update07312025-1.log
+-rw-r--r--  1 ark  ark  54254 Aug 25 04:52 update07312025.log
+-rwxr-xr-x  1 ark  ark    259 Sep  1 11:11 .wget-hsts
+
+/opt/system:
+total 136
+drwxrwxr-x  5 ark ark  4096 Sep  1 11:16 .
+drwxrwxr-x 37 ark ark  4096 Nov 19  2025 ..
+-rwxrwxrwx  1 ark ark    89 Apr 11  2024 351Files.sh
+drwxrwxrwx  4 ark ark  4096 Jul  7 04:41 Advanced
+-rwxrwxrwx  1 ark ark   927 Apr 11  2024 Change LED to Red.sh
+-rwxrwxrwx  1 ark ark   444 Sep 19  2021 Change Password.sh
+-rwxrwxrwx  1 ark ark  2961 Apr 12  2024 Change Time.sh
+drwxrwxrwx  2 ark ark  4096 Jun 17 04:27 DeviceType
+-rwxrwxrwx  1 ark ark   409 Jan 21  2023 Disable Remote Services.sh
+-rwxrwxrwx  1 ark ark   961 Mar 12  2023 Enable Remote Services.sh
+-rwxrwxrwx  1 ark ark    39 Dec 26  2020 File Manager.sh
+-rw-r--r--  1 ark ark  1635 Sep  1 11:16 gamelist.xml
+-rw-r--r--  1 ark ark  1565 Sep  1 11:16 gamelist.xml.old
+-rwxrwxrwx  1 ark ark   312 Sep 19  2021 Network Info.sh
+-rwxrwxrwx  1 ark ark   399 Apr 11  2024 PS1 - Delete m3u files.sh
+-rwxrwxrwx  1 ark ark  3577 Apr 11  2024 PS1 - Generate m3u files.sh
+-rwxrwxrwx  1 ark ark   614 Feb 22  2022 Remove ._ Files.sh
+-rwxrwxrwx  1 ark ark   471 Jul  1 14:34 Set Launchimage to ascii or pic.sh
+-rwxr-xr-x  1 ark ark   473 Jul  1 14:34 Set Launchimage to vid.sh
+drwxrwxrwx  3 ark ark  4096 Jul  1 14:26 Tools
+-rwxrwxrwx  1 ark ark  1756 Oct 17  2024 Update-Local
+-rwxrwxrwx  1 ark ark  2819 Apr 13 17:37 Update.sh
+-rwxrwxrwx  1 ark ark   658 Feb  8  2025 USB Drive Mount.sh
+-rwxrwxrwx  1 ark ark   304 Feb 20  2021 USB Drive Unmount.sh
+-rwxrwxr-x  1 ark ark 11014 Nov 19  2025 Wifi.sh
+-rwxrwxrwx  1 ark ark 26771 Aug 25 15:40 Wifi-Toggle.sh
+$ grep -rlE 'gpio|i2c|amixer|rk817' /usr/local/bin /opt/system /etc/systemd/system 2>/dev/null | head -30
+/usr/local/bin/batt_life_warning.py.red
+/usr/local/bin/current_volume
+/usr/local/bin/retrorun
+/usr/local/bin/ogage.351mp
+/usr/local/bin/fix_power_led.green
+/usr/local/bin/fix_power_led
+/usr/local/bin/Change LED to Blue.sh
+/usr/local/bin/retrorun32
+/usr/local/bin/Change LED to Red.sh
+/usr/local/bin/auto_suspend.py
+/usr/local/bin/ogage.r33s
+/usr/local/bin/batt_life_warning.py.green
+/usr/local/bin/rg351_gpio.sh
+/usr/local/bin/fixvolume.sh
+/usr/local/bin/retrorun_js2xbox
+/usr/local/bin/checknswitchforusbdac.sh
+/usr/local/bin/oga_events.py
+/usr/local/bin/wifitoggle.sh
+/usr/local/bin/mute_toggle.sh
+/usr/local/bin/BaRT_QuickMode.sh
+/usr/local/bin/buttonmon.sh
+/usr/local/bin/odroidgoa_utils.sh
+/usr/local/bin/ogage
+/usr/local/bin/batt_life_warning.py
+/usr/local/bin/spktoggle.sh
+/usr/local/bin/ogage.r36s
+/usr/local/bin/fix_power_led.red
+/opt/system/Tools/PortMaster/utils/patcher/assets/sfx/Eternity.ogg
+/opt/system/Tools/PortMaster/pylibs.zip
+/opt/system/Change LED to Red.sh
+$ amixer -c 0 sget 'Playback Path'; amixer -c 0 sget 'Playback' | grep Front
+Simple mixer control 'Playback Path',0
+  Capabilities: enum
+  Items: 'OFF' 'SPK' 'HP' 'SPK_HP' 'RCV' 'HP_NO_MIC' 'BT' 'RING_SPK' 'RING_HP' 'RING_HP_NO_MIC' 'RING_SPK_HP'
+  Item0: 'SPK'
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Front Left: 100 [100%] [-6.75dB]
+  Front Right: 100 [100%] [-6.75dB]
+DONE - send the whole audio_diag5_out folder from THIS card.

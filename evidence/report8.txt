@@ -1,0 +1,17 @@
+R36S diag 8 (codec kick/reset replay) - Thu Sep  4 05:56:00 AM +0530 2025   HEADPHONES UNPLUGGED
+   [idle] 12=03 13=f4 14=00 15=0f 17=40 2f=00 30=04 31=00 32=00 38=11 39=ff 3a=ff 3d=e0 3f=09 40=a5 41=4c 42=04 45=0c 46=a5 47=00 48=00 4a=00 4b=0f 4c=20
+TEST 1 (1 play): baseline
+   [t1 during] 12=03 13=f4 14=00 15=0f 17=40 2f=00 30=04 31=00 32=00 38=11 39=ff 3a=ff 3d=e0 3f=09 40=a5 41=4c 42=04 45=0c 46=a5 47=00 48=00 4a=00 4b=0f 4c=20
+TEST 2 (2 plays): DAC digital-clock restart 1.5 s in
+   [t2 after kick] 12=03 13=f4 14=00 15=0f 17=40 2f=03 30=04 31=00 32=00 38=11 39=ff 3a=ff 3d=e0 3f=09 40=a5 41=4c 42=04 45=0c 46=a5 47=00 48=00 4a=00 4b=0f 4c=20
+TEST 3 (3 plays): DAC restart + PLL power-cycle 1.5 s in
+   [t3 after kick] 12=03 13=f4 14=00 15=0f 17=40 2f=03 30=04 31=00 32=00 38=10 39=00 3a=00 3d=e0 3f=09 40=a5 41=4c 42=04 45=0c 46=a5 47=00 48=00 4a=00 4b=0f 4c=20
+TEST 4 (4 plays): FULL codec reset + working-kernel bring-up 1.5 s in
+   [t4 after reset] 12=03 13=f4 14=00 15=0f 17=40 2f=03 30=04 31=00 32=00 38=10 39=00 3a=00 3d=e0 3f=09 40=a5 41=7f 42=04 45=0c 46=a5 47=00 48=00 4a=00 4b=0f 4c=20
+TEST 5 (5 plays): full reset again BEFORE playing (codec re-initialised, then stream starts)
+   [t5 before play] 12=03 13=f4 14=00 15=0f 17=40 2f=03 30=04 31=00 32=00 38=10 39=ff 3a=ff 3d=e0 3f=09 40=a5 41=7f 42=04 45=0c 46=a5 47=00 48=00 4a=00 4b=0f 4c=20
+   [t5 during] 12=03 13=f4 14=00 15=0f 17=40 2f=03 30=04 31=00 32=00 38=11 39=00 3a=00 3d=e0 3f=09 40=a5 41=7f 42=04 45=0c 46=a5 47=00 48=00 4a=00 4b=0f 4c=20
+TEST 6 (6 plays): write applied-volume regs 39/3a directly to 00 while playing
+   [t6 after write] 12=03 13=f4 14=00 15=0f 17=40 2f=03 30=04 31=00 32=00 38=10 39=00 3a=00 3d=e0 3f=09 40=a5 41=7f 42=04 45=0c 46=a5 47=00 48=00 4a=00 4b=0f 4c=20
+
+DONE. Which of tests 1-6 did the speaker play?  Send report8.txt.  Reboot the device afterwards.

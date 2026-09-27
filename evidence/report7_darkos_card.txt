@@ -1,0 +1,31 @@
+R36S diag 7 - Thu Sep  4 05:54:22 AM +0530 2025   HEADPHONES UNPLUGGED
+natural levels: gpio0_A0=0 gpio0_B3=1 gpio0_B4=1 gpio3_A7=0
+idle:
+   codec VOL set 31/32=00/00  applied 39/3a=ff/ff  38=11
+Count the plays you hear from the SPEAKER for each test:
+05:54:26 TEST 1 (1 plays): baseline (LED pins untouched, spk pin HIGH)
+   pins: gpio-0=in/0 gpio-11=in/1 gpio-12=in/1 gpio-103=out/1 
+   during test 1:
+   codec VOL set 31/32=00/00  applied 39/3a=ff/ff  38=11
+05:54:32 TEST 2 (2 plays): gpio0_A0 HIGH (as working kernel), spk pin HIGH
+   pins: gpio-0=out/1 gpio-11=in/1 gpio-12=in/1 gpio-103=out/1 
+   during test 2:
+   codec VOL set 31/32=00/00  applied 39/3a=ff/ff  38=10
+05:54:40 TEST 3 (3 plays): gpio0_A0 HIGH, B3 LOW, B4 HIGH (full working-kernel LED state), spk pin HIGH
+   pins: gpio-0=out/1 gpio-11=out/0 gpio-12=out/1 gpio-103=out/1 
+   during test 3:
+   codec VOL set 31/32=00/00  applied 39/3a=ff/ff  38=10
+05:54:48 TEST 4 (4 plays): same LED state, spk pin LOW
+   pins: gpio-0=out/1 gpio-11=out/0 gpio-12=out/1 gpio-103=out/0 
+   during test 4:
+   codec VOL set 31/32=00/00  applied 39/3a=ff/ff  38=10
+05:54:59 TEST 5 (5 plays): LED pins untouched, spk HIGH, DAC volume re-written 1.5 s in
+   pins: gpio-0=in/0 gpio-11=in/1 gpio-12=in/1 gpio-103=out/1 
+   after rewrite (test 5):
+   codec VOL set 31/32=00/00  applied 39/3a=ff/ff  38=11
+05:55:12 TEST 6 (6 plays): LED state + spk HIGH + DAC volume re-written 1.5 s in
+   pins: gpio-0=out/1 gpio-11=out/0 gpio-12=out/1 gpio-103=out/1 
+   after rewrite (test 6):
+   codec VOL set 31/32=00/00  applied 39/3a=ff/ff  38=11
+
+DONE. Tell me which tests (1-6) you heard from the speaker. Send report7.txt.
