@@ -1,26 +1,77 @@
 # R36S clone V20 2025-05-18 (batch 2551) — dArkOS audio fix
 
-**No sound at all on dArkOS (speaker and headphones) on the R36S clone motherboard `R36S-V20 2025-05-18 2551`?** This repository contains the root cause, the evidence, and a working one-click fix.
+**No sound at all on dArkOS (speaker and headphones) on the R36S clone motherboard `R36S-V20 2025-05-18 2551`?** This repository contains the root cause, the evidence, and a one-click fix that also makes the audio behave properly afterwards (correct speaker/headphone switching, a usable volume scale, less headphone hiss).
+
+**Current version: v2.2** — see [What the fix does](#what-the-fix-does) and the [changelog](#changelog).
 
 ## Quick fix (2 minutes)
 
-1. Download [`fix/Install Audio Fix.sh`](fix/Install%20Audio%20Fix.sh) (click the file, then the download icon).
-2. Put it in the `tools` folder on your ROMs partition (EASYROMS).
-3. On the device: EmulationStation → **Tools** → run **Install Audio Fix**. Reboot.
-4. Menus, games, speaker and headphones now work. `fix/Uninstall Audio Fix.sh` removes it again.
+1. Download **both** files from [`fix/`](fix/) — `Install Audio Fix.sh` and `Uninstall Audio Fix.sh` — or the zip from the latest [release](../../releases).
+2. Put them in the `tools` folder on your ROMs partition (EASYROMS).
+3. On the device: **Options → Tools → Install Audio Fix**. It shows its progress and ends with *"First install done"* (or *"Upgrade done"*). Reboot.
+4. Menus, games, speaker and headphones now work. To remove everything: **Tools → Uninstall Audio Fix**, then reboot.
 
-Tested on dArkOS-G80CA-RE 10/02/2026 (kernel 4.4.189 #86, lcdyk). It should apply to any dArkOS / ArkOS4Clone build on this kernel line; if your board is a different batch and you have the same "everything looks right but nothing plays" symptom, it's worth trying.
+The same installer is used for a first install and for upgrading from any earlier version of this fix — it replaces the old version completely, nothing is left behind. The install screen is also saved as `tools/audio_fix_install.txt`.
+
+Tested on dArkOS-G80CA-RE 10/02/2026 (kernel 4.4.189 #86, lcdyk). It should apply to any dArkOS / ArkOS4Clone build on this kernel line; if your board is a different batch and you have the same "everything looks right but nothing plays" symptom, it's worth trying — the installer checks for the RK817 chip first and changes nothing if it isn't there.
+
+## What the fix does
+
+One small background service (a bash script, about 1 MB of RAM, **no CPU while idle, no polling** — it sleeps until the headphone jack or the mixer changes):
+
+| Problem on this board under dArkOS | What the fix does |
+|---|---|
+| **No audio at all** — the RK817 codec's audio PLL never locks (see the write-up below) | "Kicks" the codec (DAC bias down → DAC digital clock off/on → PLL power-cycle → bias on) at boot, after every headphone plug/unplug, whenever the audio path changes, and after resume. Every kick is verified and retried if needed. |
+| **Headphones silent / speaker stays on** — dArkOS's hotkey daemon has the headphone-jack polarity backwards on this board, so it switches the audio path the wrong way | Switches speaker ↔ headphones itself the moment the jack changes, drives the speaker-enable line (GPIO3_A7), and undoes the hotkey daemon's wrong switch within milliseconds. |
+| **Hiss in the headphones when nothing plays** | Sets the codec's headphone anti-pop stage to −15 dB (the original firmware's value). Adjustable — see [Settings](#settings). |
+| **Volume only audible from ~60% on the speaker** — the on-screen % is the codec's raw 0–255 register, so the bottom half of the slider is below hearing | Adds a 0–100 % volume control called **Master** that EmulationStation and the volume keys use: 0 % = mute, 1 % = −49.5 dB … 100 % = 0 dB (the same maximum as before). The speaker is audible from about 25 %. 2 dB per key press. |
+| **Menu music doesn't play** (missing link on single-card setups) | Links EmulationStation's music folder to `EASYROMS/bgmusic`. |
+
+How the volume scale stays safe: the codec stays the one real volume control — the service turns every change of Master into the codec's own volume, so games that talk to the hardware directly follow it too. The volume can **never go up by itself**: if anything else lowers the codec, Master follows it down; nothing ever raises it except a key press or the slider. If the service isn't running, moving the volume simply does nothing.
+
+All codec register access uses atomic SMBus transactions (the RK817 is also the CPU voltage regulator and battery gauge, so the kernel talks to it constantly — two-step reads could return the wrong register).
+
+### Installer safety
+
+The installer tests register access on the chip before changing anything (nothing is touched if that fails), backs up whatever is installed, installs, then verifies: service running, codec kick verified, no restart loop, headphone level applied, volume control present and driving the codec, settings saved. If any check fails it puts everything back exactly as it was by itself (or removes everything, on a first install) and saves a report as `tools/audio_fix_v22_fail.txt`. On success the backup is deleted, so only one version is ever installed.
+
+### Settings
+
+Two numbers at the top of `Install Audio Fix.sh` (edit, then run the installer again):
+
+- `HP_ATT=15` — headphone level. 15 = quietest, least hiss (default) … 0 = loudest, most hiss (dArkOS's own setting). Each 3 lower = 3 dB louder headphones and 3 dB more hiss. The speaker is not affected.
+- `VOL_RANGE=50` — the dB range of the on-screen volume (1 % = −49.5 dB with 50). 40 makes the low end louder, 60 quieter. Allowed 30–95.
+
+### Good to know
+
+- EmulationStation shows the new volume scale **after the reboot**.
+- After plugging/unplugging headphones there may be up to ~0.15 s of silence while the codec is kicked.
+- Moving EmulationStation's own volume slider in the first ~2 s after a plug/unplug takes effect when the switch-over finishes (the volume keys are always instant).
+- The service log is in RAM: `/tmp/rk817-audio-kick.log` (gone after power-off).
+- The speaker is at the hardware maximum at 100 %; there is no hidden headroom to unlock (the RK817's class-D amplifier has no gain setting).
 
 ## Project status
 
-This was a spare-time investigation on my own unit, worked through step by step with Claude (Anthropic's AI) doing the analysis, and it ends here: the fix works on my device and I don't have other boards or the time to carry it further. It isn't actively maintained. If you have a different batch or another dArkOS build, the diagnostic scripts and evidence are all here — please test, fork, and improve freely (MIT licence). The permanent fix belongs in the kernel's `rk817_codec` driver; if a maintainer picks that up, this repository will have done its job.
+This was a spare-time investigation on my own unit, worked through step by step with Claude (Anthropic's AI) doing the analysis. The fix works on my device and I don't have other boards to test, so it isn't actively maintained. If you have a different batch or another dArkOS build, the diagnostic scripts and evidence are all here — please test, fork, and improve freely (MIT licence). The permanent fix for the no-audio part belongs in the kernel's `rk817_codec` driver; if a maintainer picks that up, this repository will have done its job.
 
 ## Repository layout
 
-- `fix/` — the installer and uninstaller (a small systemd service that performs the codec PLL restart the kernel driver is missing).
+- `fix/` — the installer and uninstaller.
 - `diagnostics/` — the eight test scripts used to find the cause, in order (`audio_diag.sh` … `audio_diag8.sh`). Run from the Tools menu; each writes a report folder next to itself.
 - `evidence/` — the reports from the decisive runs (dArkOS card and the original working card).
 - `dtb/` — the stock DTB (`rf3536k3ka.dtb`) and the dArkOS "Variant 1" DTB for reference.
+
+## Changelog
+
+- **v2.2** — Usable volume scale (Master control, 0 % = mute … 100 % = 0 dB, speaker audible from ~25 %; 2 dB per key press; can never get louder by itself). Speaker/headphone switching now near-instant (~0.15 s instead of 1–2 s): the path is set the moment the jack changes, the hotkey daemon's wrong switch is undone at once, and the codec is kicked immediately when something is already playing. Installer works for first installs and upgrades from any earlier version.
+- **v2.1** — Every codec register access is one atomic SMBus transaction (fixes rare wrong reads caused by the kernel's own PMIC traffic). The kick checks that the three registers it touches end in their working state and repairs them if not. Installer: tests the chip first, backs up, verifies, restores automatically on failure.
+- **v2.0** — Service rewritten in bash (about 1 MB instead of 9 MB of RAM). dArkOS runs `killall python3` after every game, which stopped the earlier Python service for a few seconds; a bash service is never hit.
+- **v1.7** — The Python service ignored stop signals not sent by systemd (the `killall python3` above).
+- **v1.5** — Volume keys stepped on a dB curve.
+- **v1.4** — Headphone anti-pop setting from the original firmware: much less idle hiss.
+- **v1.3** — The service switches speaker/headphones itself (the hotkey daemon has the jack polarity backwards on this board), drives the speaker-enable line, links the menu-music folder.
+- **v1.2** — Event-driven only (jack + mixer changes, no polling); every kick verified with retries.
+- **v1.0** — First release: codec PLL kick at boot, after headphone events and after resume.
 
 ---
 
@@ -147,9 +198,10 @@ Register map used (I²C bus 0, address `0x20`; codec regs = PMIC register addres
 
 ## 4. The fix (workaround for the current dArkOS build)
 
-`Install Audio Fix.sh` (attached) — copy it to the `tools` folder on the EASYROMS partition, run it once from EmulationStation → Tools, reboot. It installs:
+`Install Audio Fix.sh` — copy it (and the uninstaller) to the `tools` folder on the EASYROMS partition, run it once from Options → Tools, reboot. It installs:
 
-- `/usr/local/bin/rk817-audio-kick.py` — at start: loads `i2c-dev`, holds GPIO3_A7 high (speaker enable, harmless if unused), opens a silent ALSA stream and performs the kick over I²C:
+- `/usr/local/bin/rk817-audio-kick.sh` — the service (bash). Loads `i2c-dev`, then sleeps on two event sources: the `rockchip,rk817-codec Headphones` input device and `alsactl monitor`. On start and on every jack change it sets the `Playback Path` (HP/SPK) and GPIO3_A7, kicks the codec and verifies it (`0x39` applied-volume readback must not be `0xff`), holds the path against the hotkey daemon's wrong switch, and applies the headphone level. It also turns the `Master` volume control into the codec volume. Log: `/tmp/rk817-audio-kick.log`.
+- `/usr/local/bin/rk817-codec` — a one-shot Python helper that does the I²C register work in atomic SMBus transactions (runs for a fraction of a second per kick). The kick sequence:
   ```
   0x2f |= 0x08   (DAC bias down)
   0x15 &= ~0x08  (DAC digital clock off)
@@ -158,13 +210,16 @@ Register map used (I²C bus 0, address `0x20`; codec regs = PMIC register addres
   0x47 &= ~0x01  (PLL power up)
   0x2f &= ~0x08  (DAC bias on)
   ```
-  then watches the `rockchip,rk817-codec Headphones` input device and repeats the kick 0.8 s after every headphone plug/unplug (dArkOS switches the audio path then). Log: `/tmp/rk817-audio-kick.log`.
-- `/etc/systemd/system/rk817-audio-kick.service` (enabled, `Restart=always`).
-- `/lib/systemd/system-sleep/rk817-audio-kick` — restarts the service after resume.
+  afterwards it checks bias, DAC clock and PLL bits are in their working state and repairs them if not.
+- `/usr/local/bin/amixer` — a small wrapper so the volume keys step the `Master` control (2 dB per press) and set the codec at once; everything else passes through to the real `amixer`.
+- `Master Playback Volume` — a user-defined ALSA control (0–100), saved with the normal mixer state so it exists before EmulationStation starts.
+- `/etc/systemd/system/rk817-audio-kick.service` (enabled, `Restart=always`) and `/lib/systemd/system-sleep/rk817-audio-kick` (re-kick after resume).
 
-`Uninstall Audio Fix.sh` removes all of it.
+`Uninstall Audio Fix.sh` removes all of it, including the `Master` control.
 
-**Result:** after reboot, EmulationStation menu sounds and games (tested Mario 64) play through the speaker on dArkOS.
+Codec registers used beyond section 3: `0x3d` AHP_CFG0 (bits 4:3 headphone amplitude boost), `0x3e` AHP_CFG1 (bit 4 anti-pop enable, bits 3:0 anti-pop attenuation 0…−15 dB), `0x41` ACLASSD_CFG2 (class-D over-current limits; no gain setting exists for the class-D amplifier), from the RK809/RK817 datasheet register description.
+
+**Result:** EmulationStation menu sounds and games play through the speaker and headphones on dArkOS, with correct switching between them.
 
 ## 5. Suggested proper fix for the kernel
 
@@ -172,7 +227,7 @@ In the ArkOS4Clone / dArkOSRE `rk817_codec.c`, call `rk817_restart_dac_digital_c
 
 ## 6. Files in this repository
 
-- `fix/Install Audio Fix.sh`, `fix/Uninstall Audio Fix.sh` — the fix.
+- `fix/Install Audio Fix.sh`, `fix/Uninstall Audio Fix.sh` — the fix (v2.2).
 - `diagnostics/audio_diag8.sh` + `evidence/report8.txt` — the decisive experiment and its log.
 - `evidence/report4_darkos_card.txt` / `evidence/report5_original_card.txt` — register/clock/GPIO snapshots; `evidence/dmesg_darkos_card.txt`.
 - `dtb/rf3536k3ka.dtb` (stock) and `dtb/rk3326-g80ca-linux.dtb` (dArkOS Variant 1) for reference.
